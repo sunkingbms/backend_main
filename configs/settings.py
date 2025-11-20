@@ -4,6 +4,7 @@ Django settings for configs project.
 
 import os
 from pathlib import Path
+from decouple import config
 from dotenv import load_dotenv
 from datetime import timedelta
 
@@ -93,12 +94,27 @@ WSGI_APPLICATION = 'configs.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# Dev db
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+# Production - Managed Postgresql db params
+""" DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": config("DB_NAME"),
+        "USER": config("DB_USER"),
+        "PASSWORD": config("DB_PASSWORD"),
+        "HOST": config("DB_HOST"),
+        "PORT": config("DB_PORT"),
+        "OPTIONS": {
+            "sslmode": "require"  
+        },
+    }
+} """
 
 # ----- Our Custom User Added ---------
 # We are telling django to use our custom user model not the default one
