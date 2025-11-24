@@ -66,6 +66,6 @@ python manage.py runserver
 ## Swagger documentation endpoint
 
 ```bash
-http://127.0.0.1:8080/api/docs/#/
+http://localhost:8080/api/docs/#/
 
 ```
