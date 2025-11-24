@@ -12,6 +12,19 @@ This project is a **production-grade Django REST API** repository which will be 
     git clone https://github.com/<your-org>/<your-repo>.git
     cd skbackend
 ```
+### 2 IMPORTANT: Python Version
+```bash
+#your system needs to be between python version 3.10 to 3.12
+
+#windows check your version
+python --version
+
+#Mac Users 
+python3 --version
+
+#If your version is higher or lower, use chat gpt to correct your version. Ensure you do this before creating your vertual environment
+
+```
 
 ### 2 Create a **Virtual Environment** and give it any name
 ```bash
