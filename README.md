@@ -21,6 +21,9 @@ python -m venv venv_name # Replace venv_name with your virtual env name
 ### 3 Activating installed virtual environment
 ```bash
 source venv_name/bin/activate # venv_name should be replaced with your virtual environment name
+
+#for windows systems
+source venv_name/Scripts/activate # venv_name should be replaced with your virtual environment name
 ```
 
 ### 3 Installing required packages
