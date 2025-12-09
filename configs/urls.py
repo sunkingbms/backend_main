@@ -23,6 +23,7 @@ urlpatterns = [
     path('api/auth/token/', TokenObtainPairView.as_view(), name='auth_token'),
     path('api/auth/token/refresh/', TokenRefreshView.as_view(), name='auth_token_refresh'),
     path('api/auth/logout/', LogoutView.as_view(), name='auth_logout'),
+    path('api/auth/', include('dj_rest_auth.urls')),
     
     #Google Auth
     path('api/auth/google/login/', GoogleLoginView.as_view(), name='google_login'),
