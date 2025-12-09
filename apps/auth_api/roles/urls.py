@@ -3,8 +3,8 @@ from .views import RoleListView, RoleDetailView, PermissionListView, assign_user
 
 urlpatterns = [
     path('roles/', RoleListView.as_view(), name='role-list'),
-    path('roles/<int:pk>/', RoleDetailView.as_view(), name='role-detail'),
+    path('roles/<uuid:pk>/', RoleDetailView.as_view(), name='role-detail'),
     path('permissions/', PermissionListView.as_view(), name='permissions-list'),
     path('users/<uuid:user_id>/roles/', user_roles, name='user-roles'),
-    path('users/<uuid:user_id>/roles/assign/', assign_user_roles, name='assign-user-role') 
+    path('users/<uuid:user_id>/roles/assign/', assign_user_roles, name='assign-user-role')
 ]
