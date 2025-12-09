@@ -21,7 +21,7 @@ class ZendeskProfileSerializer(serializers.ModelSerializer):
     )
     class Meta:
         model = ZendeskProfile
-        fields = ("id", "user", "user_id", "employee_id", "role", "country", "created_at")
+        fields = ("id", "user", "user_id", "employee_id", "role", "country", "username", "created_at")
         read_only_fields = ('id', 'user', 'created_at')
         
         

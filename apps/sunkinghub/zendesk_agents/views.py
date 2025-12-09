@@ -2,6 +2,7 @@ from rest_framework import status, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination 
+from drf_spectacular.utils import extend_schema
 from .models import ZendeskProfile
 from .serializers import ZendeskProfileSerializer
 from django.contrib.auth import get_user_model
@@ -18,6 +19,11 @@ class LinkZendeskUserView(APIView):
     """
     permission_classes = [permissions.IsAuthenticated]
 
+    @extend_schema(
+        request=ZendeskProfileSerializer,
+        responses={200: ZendeskProfileSerializer, 201: ZendeskProfileSerializer},
+        summary="Link or update a Zendesk profile"
+    )
     def post(self, request):
         serializer = ZendeskProfileSerializer(data=request.data, context={"request": request})
         serializer.is_valid(raise_exception=True)
@@ -39,6 +45,7 @@ class LinkZendeskUserView(APIView):
                 "employee_id": data["employee_id"],
                 "role": data.get("role", "Agent"),
                 "country": data["country"],
+                "username": data["username"]
             }
         )
 
@@ -46,7 +53,8 @@ class LinkZendeskUserView(APIView):
             profile.employee_id = data["employee_id"]
             profile.role = data.get("role", profile.role)
             profile.country = data["country"]
-            profile.save(update_fields=["employee_id", "role", "country"])
+            profile.username = data["username"]
+            profile.save(update_fields=["employee_id", "role", "country", "username"])
 
         out_serializer = ZendeskProfileSerializer(profile, context={"request": request})
         return Response(out_serializer.data, status=status.HTTP_201_CREATED if created else status.HTTP_200_OK)
@@ -67,6 +75,10 @@ class ZendeskProfileListView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     pagination_class = StandardResultsSetPagination
 
+    @extend_schema(
+        responses={200: ZendeskProfileSerializer(many=True)},
+        summary="List Zendesk profiles",
+    )
     def get(self, request):
         # Admin: list all profiles
         if request.user.is_staff:
