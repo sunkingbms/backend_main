@@ -3,6 +3,7 @@ from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth import get_user_model
 
 from apps.sunkinghub.zendesk_agents.serializers import ZendeskProfileSerializer
+from apps.auth_api.roles.serializers import SimpleRoleSerializer
 
 
 User = get_user_model() 
@@ -13,33 +14,43 @@ class GoogleTokenSerializer(serializers.Serializer):
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     """ Serializer used for register users """
+
     password = serializers.CharField(
-        write_only=True, 
-        required=True, 
+        write_only=True,
+        required=True,
         validators=[validate_password],
         help_text="User password. Must meet Django password validation requirements."
     )
     password2 = serializers.CharField(
-        write_only=True, 
+        write_only=True,
         required=True,
         help_text="Confirm password. Must match the password field."
     )
-    
+
     class Meta:
         model = User
-        fields = ['email', 'password', 'password2', 'first_name', 'last_name']
+        fields = [
+            'email',
+            'password',
+            'password2',
+            'first_name',
+            'last_name',
+            'employee_id',
+            'country',
+        ]
         extra_kwargs = {
             'email': {'help_text': 'User email address. Must be unique.'},
             'first_name': {'required': True, 'help_text': 'User first name'},
             'last_name': {'required': True, 'help_text': 'User last name'},
+            'employee_id': {'required': True, 'help_text': 'Staff id is required'},
+            'country': {'required': True, 'help_text': 'Country or market the user'},
         }
-        
+
     def validate(self, attrs: dict) -> dict:
         if attrs['password'] != attrs['password2']:
             raise serializers.ValidationError({'password2': ['Passwords did not match']})
-        
         return attrs
-    
+
     def create(self, validated_data: dict) -> User:
         validated_data.pop('password2')
         password = validated_data.pop('password')
@@ -49,11 +60,27 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     """Serializer for user data in response"""
+
     zendesk_profile = ZendeskProfileSerializer(read_only=True)
+    roles = serializers.SerializerMethodField()
+
     class Meta:
         model = User
-        fields = ['id', 'email', 'first_name', 'last_name', 'zendesk_profile']
+        fields = [
+            'id',
+            'email',
+            'first_name',
+            'last_name',
+            'employee_id',
+            'country',
+            'zendesk_profile',
+            'roles',
+        ]
         read_only_fields = fields
+
+    def get_roles(self, obj):
+        role_objs = [ur.role for ur in obj.user_roles.select_related("role").filter(is_active=True)]
+        return SimpleRoleSerializer(role_objs, many=True).data
         
         
 class UserDetailSerializer(UserSerializer):

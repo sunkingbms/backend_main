@@ -34,9 +34,8 @@ class RegisterView(APIView):
     Register a new user account.
     
     Creates a new user with email, password, first name, and last name.
-    Requires authentication to register new users.
     """
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
     
     @extend_schema(
         request=UserRegistrationSerializer,
