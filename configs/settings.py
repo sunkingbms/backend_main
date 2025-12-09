@@ -25,13 +25,12 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+DEBUG = True
 
-#----- Allowed Endpoints in the development phase
-if DEBUG:
-    ALLOWED_HOSTS = ['localhost', '127.0.0.1']
-else:
-    ALLOWED_HOSTS = ['localhost']
+ALLOWED_HOSTS = []
+
+#----- Allowed Endpoints / Hosts
+# Use environment override if provided, else fall back to sensible local defaults.
 
 
 # Application definition
@@ -46,10 +45,12 @@ INSTALLED_APPS = [
     
     # Apps installed manually
     'rest_framework',
+    'rest_framework.authtoken',
     'rest_framework_simplejwt',
     "rest_framework_simplejwt.token_blacklist",
     'corsheaders',
     "drf_spectacular",  
+    'dj_rest_auth',
     
     # My internal apps. Use this to add created app
     'apps.auth_api.roles',
@@ -194,6 +195,10 @@ REST_FRAMEWORK = {
     # The below is for the browser API documentation end
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
+
+REST_USE_JWT = True
+JWT_AUTH_COOKIE = "access_token"
+JWT_AUTH_REFRESH_COOKIE = "refresh_token"
 
 #------- Simple JWT ------------
 SIMPLE_JWT = {
